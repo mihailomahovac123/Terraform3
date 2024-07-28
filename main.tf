@@ -114,7 +114,7 @@ resource "aws_security_group" "ec2_sg" {
   }
 
 }
-
+#GRESKA JER FALI INSTANCE PROFLE NA AWS INSTANCE
 resource "aws_instance" "aws_instance_1" {
 
 ami="ami-0e872aee57663ae2d"
