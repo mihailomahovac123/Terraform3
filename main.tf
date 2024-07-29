@@ -9,7 +9,7 @@ terraform {
    backend "s3" {
 
     bucket="tfstatemihailo"
-    key="terraformNew.tfstate"
+    key="terraforms3prem.tfstate"
     region="eu-central-1"
   
   }
@@ -87,7 +87,6 @@ resource "aws_iam_role_policy" "s3_limited_access" { //policy dodat na rolu
 }
      
 
-//profil za ec2 instancu sacinjen od role
 
 
 
@@ -114,17 +113,6 @@ resource "aws_security_group" "ec2_sg" {
   }
 
 }
-#GRESKA JER FALI INSTANCE PROFLE NA AWS INSTANCE
-resource "aws_instance" "aws_instance_1" {
-
-ami="ami-0e872aee57663ae2d"
-instance_type="t2.micro"
-subnet_id = "subnet-0c988bbc1a2d11109"
-associate_public_ip_address = true
-key_name = "first_key"
-
-security_groups = [aws_security_group.ec2_sg.id] 
-}
 
 
 //pravjenje iam instance profila na osnovu role
@@ -132,6 +120,21 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2_instance_profilee"
   role = aws_iam_role.s3_access_role_for_ec2.name
 }
+
+
+resource "aws_instance" "aws_instance_1" {
+
+ami="ami-0e872aee57663ae2d"
+instance_type="t2.micro"
+subnet_id = "subnet-0c988bbc1a2d11109"
+associate_public_ip_address = true
+key_name = "first_key"
+iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+security_groups = [aws_security_group.ec2_sg.id] 
+}
+
+
+
 
 
 resource "aws_security_group" "db_sg" {
